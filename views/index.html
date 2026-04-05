@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация и вход</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Добро пожаловать!</h1>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="register">Регистрация</button>
+        <button class="tab-btn" data-tab="login">Вход по email</button>
+        <button class="tab-btn" data-tab="telegram">Telegram вход</button>
+    </div>
+
+    <!-- Регистрация -->
+    <div id="register" class="tab-content active">
+        <h2>Регистрация по email</h2>
+        <form id="registerForm">
+            <input type="email" id="regEmail" placeholder="Email" required>
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+        <div id="regMessage" class="message"></div>
+    </div>
+
+    <!-- Вход по email -->
+    <div id="login" class="tab-content">
+        <h2>Вход по email</h2>
+        <form id="loginForm">
+            <input type="email" id="loginEmail" placeholder="Email" required>
+            <button type="submit">Получить код</button>
+        </form>
+        <div id="loginMessage" class="message"></div>
+    </div>
+
+    <!-- Telegram вход -->
+    <div id="telegram" class="tab-content">
+        <h2>Вход через Telegram</h2>
+        <form id="telegramForm">
+            <input type="text" id="telegramId" placeholder="Telegram ID" required>
+            <input type="text" id="telegramUsername" placeholder="Telegram Username (опционально)">
+            <button type="submit">Получить код в Telegram</button>
+        </form>
+        <div class="info">
+            💡 Как получить Telegram ID: напишите @userinfobot в Telegram
+        </div>
+        <div id="telegramMessage" class="message"></div>
+    </div>
+</div>
+
+<script>
+    // Регистрация
+    document.getElementById('registerForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('regEmail').value;
+
+        const response = await fetch('/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            localStorage.setItem('verifyEmail', email);
+            window.location.href = '/verify-email-page';
+        } else {
+            document.getElementById('regMessage').textContent = data.error;
+            document.getElementById('regMessage').style.color = 'red';
+        }
+    };
+
+    // Вход по email
+    document.getElementById('loginForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+
+        const response = await fetch('/login-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            localStorage.setItem('loginEmail', email);
+            window.location.href = '/verify-login-page';
+        } else {
+            document.getElementById('loginMessage').textContent = data.error;
+            document.getElementById('loginMessage').style.color = 'red';
+        }
+    };
+
+    // Telegram вход
+    document.getElementById('telegramForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const telegram_id = document.getElementById('telegramId').value;
+        const telegram_username = document.getElementById('telegramUsername').value;
+
+        const response = await fetch('/telegram-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ telegram_id, telegram_username })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            localStorage.setItem('telegramId', telegram_id);
+            window.location.href = '/verify-telegram-page';
+        } else {
+            document.getElementById('telegramMessage').textContent = data.error;
+            document.getElementById('telegramMessage').style.color = 'red';
+        }
+    };
+
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.tab).classList.add('active');
+        });
+    });
+</script>
+</body>
+</html>

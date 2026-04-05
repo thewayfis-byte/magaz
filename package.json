@@ -1,0 +1,21 @@
+{
+  "name": "auth-system",
+  "version": "1.0.0",
+  "description": "Регистрация и авторизация с email и Telegram",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "bot": "node bot.js"
+  },
+  "dependencies": {
+    "axios": "^1.14.0",
+    "dotenv": "^16.3.1",
+    "ejs": "^5.0.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mysql2": "^3.6.0",
+    "nodemailer": "^8.0.4",
+    "telegraf": "^4.12.2",
+    "uuid": "^13.0.0"
+  }
+}

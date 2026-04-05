@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wayfis - Личный кабинет</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #0f0f0f;
+            border-right: 1px solid #1f1f1f;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        .logo {
+            padding: 32px 24px;
+            border-bottom: 1px solid #1f1f1f;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #6b6b6b 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .user-info {
+            padding: 28px 24px;
+            text-align: center;
+            border-bottom: 1px solid #1f1f1f;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+
+        .avatar i {
+            font-size: 40px;
+            color: white;
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .user-balance {
+            font-size: 22px;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .user-balance small {
+            font-size: 13px;
+            font-weight: 400;
+            color: #6b7280;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 20px 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            margin-bottom: 4px;
+            color: #9ca3af;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            width: 22px;
+            font-size: 18px;
+        }
+
+        .nav-item:hover {
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: #1a1a1a;
+            color: #10b981;
+        }
+
+        .nav-section {
+            padding: 20px 16px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #4b5563;
+        }
+
+        .logout-btn {
+            margin: 20px 12px 28px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            color: #ef4444;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        .logout-btn i {
+            width: 22px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.15);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 40px;
+            background: #0a0a0a;
+            min-height: 100vh;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, #111111, #0d0d0d);
+            border-radius: 20px;
+            padding: 36px;
+            margin-bottom: 32px;
+            border: 1px solid #1f1f1f;
+        }
+
+        .welcome-card h2 {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .welcome-card p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: #111111;
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid #1f1f1f;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-card:hover {
+            border-color: #10b981;
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon i {
+            font-size: 24px;
+            color: #10b981;
+        }
+
+        .stat-info h3 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #fff;
+        }
+
+        .stat-info p {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .settings-container {
+            max-width: 700px;
+        }
+
+        .settings-card {
+            background: #111111;
+            border-radius: 20px;
+            padding: 32px;
+            border: 1px solid #1f1f1f;
+        }
+
+        .settings-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #1f1f1f;
+            color: #fff;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #1f1f1f;
+        }
+
+        .info-label {
+            width: 120px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .info-value {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .edit-btn {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            color: #fff;
+            padding: 6px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .edit-btn:hover {
+            background: #10b981;
+            border-color: #10b981;
+        }
+
+        .amount-preset {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .amount-preset:hover {
+            background: #10b981;
+            border-color: #10b981;
+        }
+
+        .coming-soon {
+            text-align: center;
+            padding: 80px 20px;
+            background: #111111;
+            border-radius: 20px;
+            border: 1px solid #1f1f1f;
+        }
+
+        .coming-soon i {
+            font-size: 64px;
+            color: #10b981;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .coming-soon h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .coming-soon p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #111111;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 420px;
+            border: 1px solid #2a2a2a;
+        }
+
+        .modal-header {
+            padding: 24px 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .modal-header .close {
+            font-size: 28px;
+            cursor: pointer;
+            color: #6b7280;
+            transition: color 0.2s;
+        }
+
+        .modal-header .close:hover {
+            color: #fff;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-body input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .modal-body input:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background: #10b981;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+        }
+
+        .message {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+            }
+
+            .logo h1,
+            .user-name,
+            .user-balance small,
+            .nav-item span,
+            .nav-section,
+            .logout-btn span {
+                display: none;
+            }
+
+            .avatar {
+                width: 48px;
+                height: 48px;
+            }
+
+            .avatar i {
+                font-size: 24px;
+            }
+
+            .user-balance {
+                font-size: 14px;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 12px;
+            }
+
+            .logout-btn {
+                justify-content: center;
+                padding: 12px;
+            }
+
+            .main-content {
+                margin-left: 80px;
+                padding: 24px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <aside class="sidebar">
+        <div class="logo">
+            <h1>WAYFIS</h1>
+        </div>
+
+        <div class="user-info">
+            <div class="avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="user-name" id="sidebarUserName">Загрузка...</div>
+            <div class="user-balance">
+                <span id="sidebarUserBalance">0</span> <small>₽</small>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+            <div class="nav-item active" data-page="home">
+                <i class="fas fa-home"></i>
+                <span>Домашняя страница</span>
+            </div>
+            <div class="nav-item" data-page="notifications">
+                <i class="fas fa-bell"></i>
+                <span>Уведомления</span>
+            </div>
+            <div class="nav-item" data-page="topup">
+                <i class="fas fa-wallet"></i>
+                <span>Пополнить баланс</span>
+            </div>
+            <div class="nav-item" data-page="services">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Приобрести услугу</span>
+            </div>
+
+            <div class="nav-section">Поддержка</div>
+            <div class="nav-item" data-page="create-ticket">
+                <i class="fas fa-ticket-alt"></i>
+                <span>Создать обращение</span>
+            </div>
+            <div class="nav-item" data-page="my-tickets">
+                <i class="fas fa-list"></i>
+                <span>Мои обращения</span>
+            </div>
+
+            <div class="nav-section">Аккаунт</div>
+            <div class="nav-item" data-page="settings">
+                <i class="fas fa-cog"></i>
+                <span>Настройки</span>
+            </div>
+            <div class="nav-item" data-page="invoices">
+                <i class="fas fa-file-invoice"></i>
+                <span>Счета</span>
+            </div>
+        </nav>
+
+        <a href="/logout" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Выйти</span>
+        </a>
+    </aside>
+
+    <main class="main-content">
+        <!-- Home Page -->
+        <div class="page active" id="home-page">
+            <div class="welcome-card">
+                <h2>Добро пожаловать, <span id="welcomeName">Загрузка...</span>!</h2>
+                <p>Рады видеть вас в Wayfis. Здесь вы можете управлять услугами, пополнять баланс и многое другое.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-ruble-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="balanceStat">0</h3>
+                        <p>Текущий баланс</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="servicesCount">0</h3>
+                        <p>Активных услуг</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="ticketsCount">0</h3>
+                        <p>Обращений</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications Page -->
+        <div class="page" id="notifications-page">
+            <div class="coming-soon">
+                <i class="fas fa-bell"></i>
+                <h3>Уведомления</h3>
+                <p>У вас нет новых уведомлений</p>
+            </div>
+        </div>
+
+        <!-- Topup Page -->
+        <div class="page" id="topup-page">
+            <div class="settings-container">
+                <div class="settings-card">
+                    <h3>Пополнение баланса</h3>
+
+                    <div class="info-row">
+                        <div class="info-label">Сумма:</div>
+                        <div class="info-value">
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+                                <button onclick="setAmount(100)" class="amount-preset">100 ₽</button>
+                                <button onclick="setAmount(500)" class="amount-preset">500 ₽</button>
+                                <button onclick="setAmount(1000)" class="amount-preset">1000 ₽</button>
+                                <button onclick="setAmount(5000)" class="amount-preset">5000 ₽</button>
+                            </div>
+                            <input type="number" id="topupAmount" placeholder="Или введите сумму" min="10" max="100000" style="width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 10px; color: #fff;">
+                        </div>
+                    </div>
+
+                    <button id="topupBtn" class="btn-primary" style="margin-top: 20px;">Пополнить</button>
+                    <div id="topupMessage" class="message" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Page -->
+        <div class="page" id="services-page">
+            <div class="coming-soon">
+                <i class="fas fa-server"></i>
+                <h3>Приобрести услугу</h3>
+                <p>Список услуг будет доступен в ближайшее время</p>
+            </div>
+        </div>
+
+        <!-- Create Ticket Page -->
+        <div class="page" id="create-ticket-page">
+            <div class="coming-soon">
+                <i class="fas fa-ticket-alt"></i>
+                <h3>Создать обращение</h3>
+                <p>Форма для создания обращений скоро появится</p>
+            </div>
+        </div>
+
+        <!-- My Tickets Page -->
+        <div class="page" id="my-tickets-page">
+            <div class="coming-soon">
+                <i class="fas fa-list"></i>
+                <h3>Мои обращения</h3>
+                <p>У вас нет активных обращений</p>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div class="page" id="settings-page">
+            <div class="settings-container">
+                <div class="settings-card">
+                    <h3>Настройки профиля</h3>
+
+                    <div class="info-row">
+                        <div class="info-label">Имя:</div>
+                        <div class="info-value" id="profileName">Загрузка...</div>
+                        <button class="edit-btn" onclick="editField('name')">Изменить</button>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Email:</div>
+                        <div class="info-value" id="profileEmail">Загрузка...</div>
+                        <button class="edit-btn" id="emailEditBtn" onclick="editField('email')">Изменить</button>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Пароль:</div>
+                        <div class="info-value">••••••••</div>
+                        <button class="edit-btn" onclick="editField('password')">Изменить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoices Page -->
+        <div class="page" id="invoices-page">
+            <div class="settings-container">
+                <div class="settings-card">
+                    <h3>История пополнений</h3>
+                    <div id="invoicesList">
+                        <div style="text-align: center; padding: 40px; color: #6b7280;">
+                            <i class="fas fa-spinner fa-spin"></i> Загрузка...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Редактировать</h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <input type="text" id="editValue" placeholder="Новое значение">
+            <div id="passwordFields" style="display: none;">
+                <input type="password" id="newPassword" placeholder="Новый пароль">
+                <input type="password" id="confirmPassword" placeholder="Подтвердите пароль">
+            </div>
+            <button id="saveBtn" class="btn-primary">Сохранить</button>
+            <div id="modalMessage" class="message"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentUser = null;
+    let currentEditField = null;
+
+    // Загрузка данных пользователя
+    async function loadUserData() {
+        try {
+            const response = await fetch('/api/profile');
+            const data = await response.json();
+
+            if (data.success) {
+                currentUser = data.user;
+                updateUI();
+            } else if (data.error === 'Не авторизован') {
+                window.location.href = '/';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function updateUI() {
+        const name = currentUser?.name || 'Пользователь';
+        const balance = currentUser?.balance || 0;
+        const email = currentUser?.email || 'Не привязан';
+
+        const sidebarName = document.getElementById('sidebarUserName');
+        const sidebarBalance = document.getElementById('sidebarUserBalance');
+        const welcomeName = document.getElementById('welcomeName');
+        const balanceStat = document.getElementById('balanceStat');
+        const profileName = document.getElementById('profileName');
+        const profileEmail = document.getElementById('profileEmail');
+
+        if (sidebarName) sidebarName.textContent = name;
+        if (sidebarBalance) sidebarBalance.textContent = balance.toFixed(2);
+        if (welcomeName) welcomeName.textContent = name;
+        if (balanceStat) balanceStat.textContent = balance.toFixed(2);
+        if (profileName) profileName.textContent = name;
+        if (profileEmail) profileEmail.textContent = email;
+    }
+
+    function updateBalance(newBalance) {
+        const sidebarBalance = document.getElementById('sidebarUserBalance');
+        const balanceStat = document.getElementById('balanceStat');
+        if (sidebarBalance) sidebarBalance.textContent = newBalance.toFixed(2);
+        if (balanceStat) balanceStat.textContent = newBalance.toFixed(2);
+        if (currentUser) currentUser.balance = newBalance;
+    }
+
+    function setAmount(amount) {
+        const amountInput = document.getElementById('topupAmount');
+        if (amountInput) amountInput.value = amount;
+    }
+
+    // Пополнение баланса - РЕАЛЬНАЯ ОПЛАТА ЧЕРЕЗ ЮKASSA
+    const topupBtn = document.getElementById('topupBtn');
+    if (topupBtn) {
+        topupBtn.onclick = async function() {
+            const amountInput = document.getElementById('topupAmount');
+            const amount = amountInput?.value;
+            const messageDiv = document.getElementById('topupMessage');
+
+            if (!messageDiv) return;
+
+            if (!amount || amount < 10) {
+                messageDiv.textContent = 'Минимальная сумма 10 рублей';
+                messageDiv.style.color = '#ef4444';
+                return;
+            }
+
+            if (amount > 100000) {
+                messageDiv.textContent = 'Максимальная сумма 100000 рублей';
+                messageDiv.style.color = '#ef4444';
+                return;
+            }
+
+            messageDiv.textContent = 'Создание платежа...';
+            messageDiv.style.color = '#10b981';
+
+            try {
+                const response = await fetch('/api/create-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: parseFloat(amount) })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    messageDiv.textContent = 'Перенаправление на оплату...';
+                    // Открываем страницу оплаты в новой вкладке
+                    window.open(data.confirmationUrl, '_blank');
+                    // Или перенаправляем в текущей:
+                    // window.location.href = data.confirmationUrl;
+
+                    setTimeout(() => {
+                        messageDiv.textContent = 'Оплата открыта в новой вкладке. После оплаты вернитесь и обновите страницу.';
+                        messageDiv.style.color = '#f59e0b';
+                    }, 2000);
+                } else {
+                    messageDiv.textContent = data.error || 'Ошибка создания платежа';
+                    messageDiv.style.color = '#ef4444';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                messageDiv.textContent = 'Ошибка соединения: ' + error.message;
+                messageDiv.style.color = '#ef4444';
+            }
+        };
+    }
+
+    // Навигация
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const page = item.getAttribute('data-page');
+            if (!page) return;
+
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            item.classList.add('active');
+
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const targetPage = document.getElementById(`${page}-page`);
+            if (targetPage) targetPage.classList.add('active');
+        });
+    });
+
+    // Редактирование полей
+    function editField(field) {
+        currentEditField = field;
+        const modal = document.getElementById('editModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const editValue = document.getElementById('editValue');
+        const passwordFields = document.getElementById('passwordFields');
+
+        if (!modal) return;
+
+        editValue.style.display = 'block';
+        passwordFields.style.display = 'none';
+        editValue.value = '';
+        document.getElementById('modalMessage').textContent = '';
+
+        switch(field) {
+            case 'name':
+                modalTitle.textContent = 'Изменить имя';
+                editValue.placeholder = 'Новое имя';
+                editValue.value = currentUser?.name || '';
+                break;
+            case 'email':
+                modalTitle.textContent = 'Изменить email';
+                editValue.placeholder = 'Новый email';
+                editValue.value = (currentUser?.email !== 'Не привязан') ? currentUser?.email : '';
+                break;
+            case 'password':
+                modalTitle.textContent = 'Изменить пароль';
+                editValue.style.display = 'none';
+                passwordFields.style.display = 'block';
+                break;
+        }
+
+        modal.style.display = 'flex';
+    }
+
+    // Сохранение
+    const saveBtn = document.getElementById('saveBtn');
+    if (saveBtn) {
+        saveBtn.onclick = async function() {
+            const editValue = document.getElementById('editValue')?.value;
+            const newPassword = document.getElementById('newPassword')?.value;
+            const confirmPassword = document.getElementById('confirmPassword')?.value;
+            const modalMessage = document.getElementById('modalMessage');
+
+            let url = '';
+            let data = {};
+
+            switch(currentEditField) {
+                case 'name':
+                    if (!editValue) {
+                        if (modalMessage) modalMessage.textContent = 'Введите имя';
+                        return;
+                    }
+                    url = '/api/update-name';
+                    data = { name: editValue };
+                    break;
+                case 'email':
+                    if (!editValue) {
+                        if (modalMessage) modalMessage.textContent = 'Введите email';
+                        return;
+                    }
+                    url = '/api/update-email';
+                    data = { email: editValue };
+                    break;
+                case 'password':
+                    if (!newPassword || !confirmPassword) {
+                        if (modalMessage) modalMessage.textContent = 'Заполните все поля';
+                        return;
+                    }
+                    if (newPassword !== confirmPassword) {
+                        if (modalMessage) modalMessage.textContent = 'Пароли не совпадают';
+                        return;
+                    }
+                    if (newPassword.length < 6) {
+                        if (modalMessage) modalMessage.textContent = 'Пароль должен быть не менее 6 символов';
+                        return;
+                    }
+                    url = '/api/update-password';
+                    data = { password: newPassword };
+                    break;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const modal = document.getElementById('editModal');
+                    if (modal) modal.style.display = 'none';
+                    loadUserData();
+                } else {
+                    if (modalMessage) modalMessage.textContent = result.error;
+                }
+            } catch (error) {
+                if (modalMessage) modalMessage.textContent = 'Ошибка сервера';
+            }
+        };
+    }
+
+    // Закрытие модального окна
+    const closeBtn = document.querySelector('.close');
+    if (closeBtn) {
+        closeBtn.onclick = function() {
+            const modal = document.getElementById('editModal');
+            if (modal) modal.style.display = 'none';
+        };
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('editModal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    };
+
+    // Загрузка данных
+    loadUserData();
+</script>
+</body>
+</html>

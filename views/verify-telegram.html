@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram подтверждение - Aurorix</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>AURORIX</h1>
+            <p>подтверждение telegram</p>
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="code" placeholder="введите код из telegram" maxlength="6">
+        </div>
+
+        <button id="verifyBtn" class="btn-primary">подтвердить</button>
+
+        <div id="message" class="message"></div>
+
+        <div class="auth-footer">
+            <p>© aurorix, 2026</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const telegramId = localStorage.getItem('telegramId');
+
+    if (!telegramId) {
+        window.location.href = '/';
+    }
+
+    document.getElementById('verifyBtn').onclick = async () => {
+        const code = document.getElementById('code').value;
+
+        const response = await fetch('/verify-telegram', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ telegram_id: telegramId, code })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            localStorage.removeItem('telegramId');
+            window.location.href = '/dashboard';
+        } else {
+            document.getElementById('message').textContent = data.error;
+            document.getElementById('message').style.color = '#ff4444';
+        }
+    };
+</script>
+</body>
+</html>

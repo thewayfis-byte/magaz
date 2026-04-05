@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wayfis - Вход</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .auth-card {
+            background: #0f0f0f;
+            border-radius: 24px;
+            padding: 48px 40px;
+            border: 1px solid #1f1f1f;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .auth-header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #6b6b6b 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .auth-header p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 32px;
+            border-bottom: 1px solid #1f1f1f;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .tab-btn.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+
+        .input-group input::placeholder {
+            color: #6b7280;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: #10b981;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+        }
+
+        .auth-links {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .link {
+            color: #6b7280;
+            font-size: 12px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .link:hover {
+            color: #10b981;
+        }
+
+        .auth-footer {
+            margin-top: 32px;
+            text-align: center;
+            padding-top: 24px;
+            border-top: 1px solid #1f1f1f;
+        }
+
+        .auth-footer p {
+            color: #4b5563;
+            font-size: 11px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #0f0f0f;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid #1f1f1f;
+        }
+
+        .modal-header {
+            padding: 24px 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .modal-header .close {
+            font-size: 28px;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .modal-header .close:hover {
+            color: #fff;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-body p {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .resend-btn {
+            width: 100%;
+            margin-top: 12px;
+            background: #1a1a1a;
+            color: #fff;
+            border: 1px solid #2a2a2a;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .resend-btn:hover {
+            background: #222;
+            border-color: #10b981;
+        }
+
+        .message {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 12px;
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>WAYFIS</h1>
+            <p>войдите в аккаунт</p>
+        </div>
+
+        <div class="auth-tabs">
+            <button class="tab-btn active" data-tab="login">Вход</button>
+            <button class="tab-btn" data-tab="register">Регистрация</button>
+        </div>
+
+        <!-- Форма входа -->
+        <div id="login-tab" class="tab-content active">
+            <form id="loginForm">
+                <div class="input-group">
+                    <input type="email" id="loginEmail" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="loginPassword" placeholder="Пароль" required>
+                </div>
+                <button type="submit" class="btn-primary">Войти</button>
+            </form>
+            <div class="auth-links">
+                <a href="#" id="forgotPassword" class="link">забыли пароль?</a>
+            </div>
+        </div>
+
+        <!-- Форма регистрации -->
+        <div id="register-tab" class="tab-content">
+            <form id="registerForm">
+                <div class="input-group">
+                    <input type="text" id="regName" placeholder="Имя" required>
+                </div>
+                <div class="input-group">
+                    <input type="email" id="regEmail" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="regPassword" placeholder="Пароль" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="regPasswordConfirm" placeholder="Подтвердите пароль" required>
+                </div>
+                <button type="submit" class="btn-primary">Зарегистрироваться</button>
+            </form>
+        </div>
+
+        <div class="auth-footer">
+            <p>© wayfis, 2026</p>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для кода -->
+<div id="verifyModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Подтверждение</h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Код отправлен на <span id="verifyEmail"></span></p>
+            <div class="input-group">
+                <input type="text" id="verifyCode" placeholder="Введите код" maxlength="6">
+            </div>
+            <button id="submitCode" class="btn-primary">Подтвердить</button>
+            <button id="resendCodeBtn" class="resend-btn">Отправить код заново</button>
+            <div id="verifyMessage" class="message"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentEmail = '';
+    let currentType = '';
+
+    // Переключение табов
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.tab + '-tab').classList.add('active');
+        });
+    });
+
+    // Регистрация
+    document.getElementById('registerForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+        const confirm = document.getElementById('regPasswordConfirm').value;
+
+        if (password !== confirm) {
+            alert('Пароли не совпадают');
+            return;
+        }
+
+        const response = await fetch('/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            currentEmail = email;
+            currentType = 'register';
+            document.getElementById('modalTitle').textContent = 'Подтверждение регистрации';
+            document.getElementById('verifyEmail').textContent = email;
+            document.getElementById('verifyModal').style.display = 'flex';
+            document.getElementById('verifyMessage').textContent = '';
+            document.getElementById('verifyCode').value = '';
+        } else {
+            alert(data.error);
+        }
+    };
+
+    // Вход
+    document.getElementById('loginForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            currentEmail = email;
+            currentType = 'login';
+            document.getElementById('modalTitle').textContent = 'Подтверждение входа';
+            document.getElementById('verifyEmail').textContent = email;
+            document.getElementById('verifyModal').style.display = 'flex';
+            document.getElementById('verifyMessage').textContent = '';
+            document.getElementById('verifyCode').value = '';
+        } else {
+            alert(data.error);
+        }
+    };
+
+    // Подтверждение кода
+    document.getElementById('submitCode').onclick = async () => {
+        const code = document.getElementById('verifyCode').value;
+        const url = currentType === 'register' ? '/verify-register' : '/verify-login';
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: currentEmail, code })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            window.location.href = '/dashboard';
+        } else {
+            document.getElementById('verifyMessage').textContent = data.error;
+        }
+    };
+
+    // Отправить код заново
+    document.getElementById('resendCodeBtn').onclick = async () => {
+        const response = await fetch('/resend-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: currentEmail, type: currentType })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            document.getElementById('verifyMessage').style.color = '#10b981';
+            document.getElementById('verifyMessage').textContent = 'Код отправлен заново!';
+        } else {
+            document.getElementById('verifyMessage').style.color = '#ef4444';
+            document.getElementById('verifyMessage').textContent = data.error;
+        }
+    };
+
+    // Забыли пароль
+    document.getElementById('forgotPassword').onclick = async (e) => {
+        e.preventDefault();
+        const email = prompt('Введите ваш email:');
+        if (email) {
+            const response = await fetch('/forgot-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await response.json();
+            alert(data.message);
+        }
+    };
+
+    // Закрытие модального окна
+    document.querySelector('.close').onclick = () => {
+        document.getElementById('verifyModal').style.display = 'none';
+    };
+
+    window.onclick = (event) => {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    };
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подтверждение входа</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Подтверждение входа</h1>
+    <p>Код отправлен на ваш email</p>
+    <form id="verifyForm">
+        <input type="text" id="code" placeholder="Введите код из письма" required>
+        <button type="submit">Войти</button>
+    </form>
+    <div id="message" class="message"></div>
+</div>
+
+<script>
+    const email = localStorage.getItem('loginEmail');
+
+    document.getElementById('verifyForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const code = document.getElementById('code').value;
+
+        const response = await fetch('/verify-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, code })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            localStorage.removeItem('loginEmail');
+            window.location.href = '/';
+        } else {
+            document.getElementById('message').textContent = data.error;
+            document.getElementById('message').style.color = 'red';
+        }
+    };
+</script>
+</body>
+</html>
